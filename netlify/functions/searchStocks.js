@@ -1,7 +1,3 @@
-// netlify/functions/searchStocks.js
-
-const fetch = require('node-fetch');
-
 exports.handler = async function(event, context) {
   const query = (event.queryStringParameters && event.queryStringParameters.q) || '';
   if (!query || query.length < 1) {
