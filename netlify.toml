@@ -1,4 +1,10 @@
 [build]
-  command   = "expo build:web"
-  publish   = "web-build"
+  command = "npx expo export:web"
+  publish = "web-build"
   functions = "netlify/functions"
+
+[dev]
+  command = "npx expo start --web" # Command to start the Expo dev server
+  port = 8888 # Port for Netlify Dev proxy
+  targetPort = 19006 # Port Expo should run on (Netlify Dev will wait for this)
+  autoLaunch = false # Do not auto-launch browser

@@ -1,3 +1,4 @@
+import 'react-native-get-random-values';
 import 'react-native-gesture-handler';
 import React from 'react';
 import { NavigationContainer } from '@react-navigation/native';
@@ -18,7 +19,11 @@ export default function App() {
         }}
       >
         <Stack.Screen name="Home"  component={HomeScreen}  options={{ title: 'Finalysis' }} />
-        <Stack.Screen name="Report" component={ReportScreen} options={{ title: '' }} />
+        <Stack.Screen 
+          name="Report" 
+          component={ReportScreen} 
+          options={({ route }) => ({ title: route.params.ticker.toUpperCase() })} 
+        />
       </Stack.Navigator>
     </NavigationContainer>
   );
