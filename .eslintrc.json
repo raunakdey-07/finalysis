@@ -1,6 +1,5 @@
 {
   "extends": [
-    "expo",
     "prettier"
   ],
   "plugins": [

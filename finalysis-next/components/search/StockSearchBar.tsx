@@ -1,32 +1,40 @@
-import { useState, useRef, useEffect } from 'react'
-import { Box, Input, Spinner, Text, Flex, Button } from '@chakra-ui/react'
-import { FiSearch } from 'react-icons/fi'
-import { useDarkMode } from '../../contexts/DarkModeContext'
+import { useState, useRef, useEffect } from 'react';
+import { Box, Input, Spinner, Text, Flex, Button } from '@chakra-ui/react';
+import { useDarkMode } from '../../contexts/DarkModeContext';
 
-type Result = { id: string; title: string }
+type Result = { id: string; title: string };
 
-export default function StockSearchBar({ onSelect, placeholder = 'Search ticker or company' }: { onSelect: (ticker: string) => void; placeholder?: string }) {
-  const { isDarkMode } = useDarkMode()
-  const [q, setQ] = useState('')
-  const [results, setResults] = useState<Result[]>([])
-  const [loading, setLoading] = useState(false)
-  const timeoutRef = useRef<number | null>(null)
+export default function StockSearchBar({
+  onSelect,
+  placeholder = 'Search ticker or company',
+}: {
+  onSelect: (ticker: string) => void;
+  placeholder?: string;
+}) {
+  const { isDarkMode } = useDarkMode();
+  const [q, setQ] = useState('');
+  const [results, setResults] = useState<Result[]>([]);
+  const [loading, setLoading] = useState(false);
+  const timeoutRef = useRef<number | null>(null);
 
   useEffect(() => {
-    if (timeoutRef.current) window.clearTimeout(timeoutRef.current)
-    if (!q) { setResults([]); return }
+    if (timeoutRef.current) window.clearTimeout(timeoutRef.current);
+    if (!q) {
+      setResults([]);
+      return;
+    }
     timeoutRef.current = window.setTimeout(async () => {
-      setLoading(true)
+      setLoading(true);
       try {
-        const res = await fetch(`/api/searchStocks?q=${encodeURIComponent(q)}`)
-        const data = await res.json()
-        setResults(data)
+        const res = await fetch(`/api/searchStocks?q=${encodeURIComponent(q)}`);
+        const data = await res.json();
+        setResults(data);
       } catch (e) {
-        setResults([])
+        setResults([]);
       }
-      setLoading(false)
-    }, 300)
-  }, [q])
+      setLoading(false);
+    }, 300);
+  }, [q]);
 
   const lightTheme = {
     inputBg: 'white',
@@ -35,9 +43,9 @@ export default function StockSearchBar({ onSelect, placeholder = 'Search ticker 
     dropdownBg: 'white',
     dropdownHover: 'gray.50',
     textColor: 'gray.800',
-    borderColor: 'gray.200'
-  }
-  
+    borderColor: 'gray.300',
+  };
+
   const darkTheme = {
     inputBg: '#0d2117', // Dark green
     inputColor: 'gray.100',
@@ -45,68 +53,95 @@ export default function StockSearchBar({ onSelect, placeholder = 'Search ticker 
     dropdownBg: '#0d2117', // Dark green
     dropdownHover: 'green.800',
     textColor: 'gray.100',
-    borderColor: 'green.700'
-  }
-  
-  const theme = isDarkMode ? darkTheme : lightTheme
+    borderColor: 'green.700',
+  };
+
+  const theme = isDarkMode ? darkTheme : lightTheme;
 
   return (
     <Box position="relative" width="100%">
       <Flex>
         <Box position="relative" flex="1">
-          <Flex align="center" position="absolute" left={3} top="50%" transform="translateY(-50%)" zIndex={1}>
-            <FiSearch color={theme.iconColor} />
-          </Flex>
-          <Input 
-            value={q} 
-            onChange={(e) => setQ(e.target.value)} 
-            placeholder={placeholder} 
+          <Input
+            value={q}
+            onChange={(e) => setQ(e.target.value)}
+            placeholder={placeholder}
             size="lg"
-            pl={10}
-            borderRadius="full" 
+            pl={4}
+            borderRadius="full"
             bg={theme.inputBg}
             color={theme.inputColor}
             borderColor={theme.borderColor}
-            _placeholder={{ color: 'gray.400' }}
+            _placeholder={{ color: isDarkMode ? 'gray.400' : 'gray.500' }}
             _focus={{
               borderColor: 'green.400',
-              boxShadow: '0 0 0 1px var(--chakra-colors-green-400)'
+              boxShadow: '0 0 0 1px var(--chakra-colors-green-400)',
             }}
           />
           {loading && (
-            <Box position="absolute" right={3} top="50%" transform="translateY(-50%)">
+            <Box
+              position="absolute"
+              right={3}
+              top="50%"
+              transform="translateY(-50%)"
+            >
               <Spinner size="sm" color="green.400" />
             </Box>
           )}
         </Box>
-        <Button 
-          ml={2} 
-          onClick={() => q && onSelect(q)} 
-          size="lg" 
+        <Button
+          ml={2}
+          onClick={() => q && onSelect(q)}
+          size="lg"
           borderRadius="full"
           colorScheme="green"
         >
-          <FiSearch />
+          <svg
+            width="18"
+            height="18"
+            viewBox="0 0 24 24"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+            aria-hidden
+          >
+            <path
+              d="M21 21l-4.35-4.35"
+              stroke="currentColor"
+              strokeWidth="1.5"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
+            <circle
+              cx="11"
+              cy="11"
+              r="6"
+              stroke="currentColor"
+              strokeWidth="1.5"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              fill="none"
+            />
+          </svg>
         </Button>
       </Flex>
       {results.length > 0 && (
-        <Box 
-          position="absolute" 
-          bg={theme.dropdownBg} 
-          mt={2} 
-          w="full" 
-          borderRadius="md" 
-          boxShadow="md" 
+        <Box
+          position="absolute"
+          bg={theme.dropdownBg}
+          mt={2}
+          w="full"
+          borderRadius="md"
+          boxShadow="md"
           zIndex={20}
           borderWidth={1}
           borderColor={theme.borderColor}
         >
-          {results.map(r => (
-            <Box 
-              key={r.id} 
-              p={3} 
-              cursor="pointer" 
-              onClick={() => onSelect(r.id)} 
+          {results.map((r) => (
+            <Box
+              key={r.id}
+              p={3}
+              cursor="pointer"
+              onClick={() => onSelect(r.id)}
               _hover={{ bg: theme.dropdownHover }}
             >
               <Text color={theme.textColor}>{r.title}</Text>
@@ -115,5 +150,5 @@ export default function StockSearchBar({ onSelect, placeholder = 'Search ticker 
         </Box>
       )}
     </Box>
-  )
+  );
 }

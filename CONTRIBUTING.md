@@ -1,4 +1,4 @@
-# Contributing to Finalysis
+                              # Contributing to Finalysis
 
 Thank you for your interest in contributing to Finalysis! This document provides guidelines and instructions for contributing to the project.
 

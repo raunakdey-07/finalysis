@@ -1,58 +1,68 @@
-import { createContext, useContext, useState, useEffect, ReactNode } from 'react'
+import {
+  createContext,
+  useContext,
+  useState,
+  useEffect,
+  ReactNode,
+} from 'react';
 
 interface DarkModeContextType {
-  isDarkMode: boolean
-  toggleDarkMode: () => void
+  isDarkMode: boolean;
+  toggleDarkMode: () => void;
 }
 
-const DarkModeContext = createContext<DarkModeContextType | undefined>(undefined)
+const DarkModeContext = createContext<DarkModeContextType | undefined>(
+  undefined
+);
 
 export function DarkModeProvider({ children }: { children: ReactNode }) {
-  const [isDarkMode, setIsDarkMode] = useState(false)
-  const [isHydrated, setIsHydrated] = useState(false)
+  const [isDarkMode, setIsDarkMode] = useState(false);
+  const [isHydrated, setIsHydrated] = useState(false);
 
   // Hydrate and load dark mode preference from localStorage on mount
   useEffect(() => {
-    const savedMode = localStorage.getItem('darkMode')
+    const savedMode = localStorage.getItem('darkMode');
     if (savedMode !== null) {
-      setIsDarkMode(JSON.parse(savedMode))
+      setIsDarkMode(JSON.parse(savedMode));
     }
-    setIsHydrated(true)
-  }, [])
+    setIsHydrated(true);
+  }, []);
 
   // Save dark mode preference to localStorage when it changes (only after hydration)
   useEffect(() => {
     if (isHydrated) {
-      localStorage.setItem('darkMode', JSON.stringify(isDarkMode))
+      localStorage.setItem('darkMode', JSON.stringify(isDarkMode));
     }
-  }, [isDarkMode, isHydrated])
+  }, [isDarkMode, isHydrated]);
 
   const toggleDarkMode = () => {
-    setIsDarkMode(!isDarkMode)
-  }
+    setIsDarkMode(!isDarkMode);
+  };
 
   return (
-    <DarkModeContext.Provider value={{ isDarkMode: isHydrated ? isDarkMode : false, toggleDarkMode }}>
+    <DarkModeContext.Provider
+      value={{ isDarkMode: isHydrated ? isDarkMode : false, toggleDarkMode }}
+    >
       {children}
     </DarkModeContext.Provider>
-  )
+  );
 }
 
 export function useDarkMode() {
-  const context = useContext(DarkModeContext)
+  const context = useContext(DarkModeContext);
   if (context === undefined) {
-    throw new Error('useDarkMode must be used within a DarkModeProvider')
+    throw new Error('useDarkMode must be used within a DarkModeProvider');
   }
-  return context
+  return context;
 }
 
 // Hook to check if the component has hydrated
 export function useIsHydrated() {
-  const [isHydrated, setIsHydrated] = useState(false)
-  
+  const [isHydrated, setIsHydrated] = useState(false);
+
   useEffect(() => {
-    setIsHydrated(true)
-  }, [])
-  
-  return isHydrated
+    setIsHydrated(true);
+  }, []);
+
+  return isHydrated;
 }
