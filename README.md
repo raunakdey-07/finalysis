@@ -1,4 +1,4 @@
-# Finalysis
+# Finalysis [Current redundant project]
 
 A React Native application for stock analysis providing detailed financial scores and insights.
 
